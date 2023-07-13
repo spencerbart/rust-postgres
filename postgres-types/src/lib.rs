@@ -838,7 +838,7 @@ pub enum IsNull {
 ///
 /// **Note:** the impl for arrays only exist when the Cargo feature `array-impls`
 /// is enabled.
-pub trait ToSql: fmt::Debug {
+pub trait ToSql: fmt::Debug + Send + Sync {
     /// Converts the value of `self` into the binary format of the specified
     /// Postgres `Type`, appending it to `out`.
     ///
@@ -1133,7 +1133,7 @@ simple_to!(f64, float8_to_sql, FLOAT8);
 
 impl<H> ToSql for HashMap<String, Option<String>, H>
 where
-    H: BuildHasher,
+    H: BuildHasher + Send + Sync,
 {
     fn to_sql(&self, _: &Type, w: &mut BytesMut) -> Result<IsNull, Box<dyn Error + Sync + Send>> {
         types::hstore_to_sql(
