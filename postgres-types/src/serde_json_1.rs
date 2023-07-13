@@ -33,7 +33,7 @@ where
 
 impl<T> ToSql for Json<T>
 where
-    T: Serialize + Debug,
+    T: Serialize + Debug + Send + Sync,
 {
     fn to_sql(
         &self,
